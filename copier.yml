@@ -23,7 +23,50 @@ service_account_email:
   help: Selecciona la cuenta de servicio a utilizar
   choices: "{{ fetch_sas(gcp_project_id) }}"
 
-# 3. User picks the desired filename for the environment
+# 3. Docker image name
+image_name:
+  type: str
+  help: Nombre de la imagen Docker a usar
+
+# 4. Artifact Registry selection
+# 4.1. THE PICKER: This is the only prompt the user sees for the repo
+_artifact_selection:
+  type: json
+  help: Seleccione el repositorio de Artifact Registry
+  choices: "{{ fetch_artifacts(gcp_project_id) }}"
+
+# 4.2. AUTO-EXTRACT & Hide to the user
+repo_name:
+  type: str
+  help: Nombre del repositorio de Artifact Registry
+  default: "{{ _artifact_selection.name }}"
+  when: false
+ar_region:
+  type: str
+  help: Región de Artifact Registry
+  default: "{{ _artifact_selection.region }}"
+  when: false
+
+# 5. Cloud Run region
+c_run_region:
+  type: str
+  help: Región de Cloud Run a utilizar
+  choices:
+    "northamerica-south1 (Mexico)": "northamerica-south1"
+    "us-central1 (Iowa) Low CO2": "us-central1"
+    "us-east1 (South Carolina)": "us-east1"
+    "us-east4 (Northern Virginia)": "us-east4"
+    "us-east5 (Columbus)": "us-east5"
+    "us-south1 (Dallas) Low CO2": "us-south1"
+    "us-west1 (Oregon) Low CO2": "us-west1"
+  default: "us-east4"
+
+# 6. Cloud Run service name
+c_run_name:
+  type: str
+  help: Nombre del servicio de Cloud Run
+
+# 7. User picks the desired filename for the environment
 env_filename:
   type: str
   help: ¿Cómo llamamos a tu nuevo entorno?
