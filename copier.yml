@@ -1,6 +1,6 @@
 # 1. Prevent internal template files from being copied
 _exclude:
-  - "extensions/"
+  - "extensions"
   - "copier.yml"
   - ".git"
   - ".gitignore" # Usually you want to exclude the template's gitignore
