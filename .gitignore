@@ -226,3 +226,17 @@ pyrightconfig.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,python,visualstudiocode
+
+### OUR CUSTOM IGNORES ###
+# API Keys and sensitive files
+keys.json
+dev.json
+pro.json
+
+# Build artifacts  
+build/
+dist/
+*.egg-info/
+
+# Deepeval telemetry
+.deepeval

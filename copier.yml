@@ -1,24 +1,31 @@
-# 1. Prevent internal template files from being copied
+# Prevents internal template files from being copied
 _exclude:
   - "extensions"
   - "copier.yml"
   - ".git"
-  - ".gitignore" # Usually you want to exclude the template's gitignore
-  - "README.md"  # Usually the template has its own README
+  - "README.md"   # Project own README
 
+# Loads custom Jinja2 extensions
 _jinja_extensions:
-  - copier_templates_extensions.TemplateExtensionLoader # 1. Load the loader
-  - extensions/gh_repos.py:GitHubRepoExtension          # 2. Now this path works!
+  - copier_templates_extensions.TemplateExtensionLoader
+  - extensions/get_data.py:GCloudExtension
 
-project_name:
+# User prompts
+# 1. User picks the project first
+gcp_project_id:
   type: str
-  help: What is the project name?
+  help: ¿Cuál es el ID del proyecto de GCP que quieres usar?
+  choices: "{{ gcloud_projects }}"
 
+# 2. Copier uses that ID to fetch the relevant Service Accounts
 service_account_email:
   type: str
-  help: What is the service account email?
+  help: Selecciona la cuenta de servicio a utilizar
+  choices: "{{ fetch_sas(gcp_project_id) }}"
 
-base_repo:
+# 3. User picks the desired filename for the environment
+env_filename:
   type: str
-  help: Select the base GitHub repository
-  choices: "{{ github_repos }}" # This comes from your extension
+  help: ¿Cómo llamamos a tu nuevo entorno?
+  default: "dev"
+

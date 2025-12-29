@@ -1,0 +1,13 @@
+.dockerignore
+.venv
+.git
+__pycache__
+*.pyc
+.env
+Makefile
+.pytest_cache/
+.vscode/
+.idea/
+.DS_Store
+dist/
+build/
