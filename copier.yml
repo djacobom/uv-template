@@ -1,0 +1,24 @@
+# 1. Prevent internal template files from being copied
+_exclude:
+  - "extensions/"
+  - "copier.yml"
+  - ".git"
+  - ".gitignore" # Usually you want to exclude the template's gitignore
+  - "README.md"  # Usually the template has its own README
+
+_jinja_extensions:
+  - copier_templates_extensions.TemplateExtensionLoader # 1. Load the loader
+  - extensions/gh_repos.py:GitHubRepoExtension          # 2. Now this path works!
+
+project_name:
+  type: str
+  help: What is the project name?
+
+service_account_email:
+  type: str
+  help: What is the service account email?
+
+base_repo:
+  type: str
+  help: Select the base GitHub repository
+  choices: "{{ github_repos }}" # This comes from your extension
