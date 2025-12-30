@@ -14,42 +14,49 @@ _jinja_extensions:
 # 1. User picks the project first
 gcp_project_id:
   type: str
+  qmark: "📁"
   help: ¿Cuál es el ID del proyecto de GCP que quieres usar?
   choices: "{{ gcloud_projects }}"
 
 # 2. Copier uses that ID to fetch the relevant Service Accounts
 service_account_email:
   type: str
+  qmark: "🔑"
   help: Selecciona la cuenta de servicio a utilizar
   choices: "{{ fetch_sas(gcp_project_id) }}"
 
 # 3. Docker image name
 image_name:
   type: str
+  qmark: "🐳"
   help: Nombre de la imagen Docker a usar
 
 # 4. Artifact Registry selection
-# 4.1. THE PICKER: This is the only prompt the user sees for the repo
-_artifact_selection:
-  type: json
+artifact_selection:
+  type: str
+  qmark: "📦"
   help: Seleccione el repositorio de Artifact Registry
-  choices: "{{ fetch_artifacts(gcp_project_id) }}"
+  choices: "{{ get_artifact_labels(gcp_project_id) }}"
 
-# 4.2. AUTO-EXTRACT & Hide to the user
+# 2. AUTO-EXTRACT (Hidden)
 repo_name:
   type: str
-  help: Nombre del repositorio de Artifact Registry
-  default: "{{ _artifact_selection.name }}"
+  help: Nombre del repositorio
+  # Look up the 'name' key in the Python class cache using the label
+  default: "{{ get_artifact_value(artifact_selection, 'name') }}"
   when: false
+
 ar_region:
   type: str
-  help: Región de Artifact Registry
-  default: "{{ _artifact_selection.region }}"
+  help: Región del repositorio
+  # Look up the 'region' key in the Python class cache using the label
+  default: "{{ get_artifact_value(artifact_selection, 'region') }}"
   when: false
 
 # 5. Cloud Run region
 c_run_region:
   type: str
+  qmark: "🌍"
   help: Región de Cloud Run a utilizar
   choices:
     "northamerica-south1 (Mexico)": "northamerica-south1"
@@ -64,11 +71,13 @@ c_run_region:
 # 6. Cloud Run service name
 c_run_name:
   type: str
+  qmark: "☁️"
   help: Nombre del servicio de Cloud Run
 
 # 7. User picks the desired filename for the environment
 env_filename:
   type: str
+  qmark: "📝"
   help: ¿Cómo llamamos a tu nuevo entorno?
   default: "dev"
 
